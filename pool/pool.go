@@ -313,7 +313,9 @@ func (p *Pool) SetupBlockPolling() {
 			}
 
 			if gbt != nil {
-				p.JobManager.ProcessTemplate(gbt)
+				if gbt.PreviousBlockHash != p.JobManager.CurrentJob.GetBlockTemplate.PreviousBlockHash {
+					p.JobManager.ProcessTemplate(gbt)
+				}
 			}
 		}
 	}()
