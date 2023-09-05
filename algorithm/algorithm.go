@@ -8,6 +8,7 @@ import (
 	"github.com/mining-pool/not-only-mining-pool/utils"
 	"github.com/samli88/go-x11-hash"
 	"golang.org/x/crypto/scrypt"
+	"github.com/YetAnotherRussian/goyescrypt"
 )
 
 var log = logging.Logger("algorithm")
@@ -22,6 +23,8 @@ func GetHashFunc(hashName string) func([]byte) []byte {
 	switch strings.ToLower(hashName) {
 	case "scrypt":
 		return ScryptHash
+	case "yescrypt":
+		return YescryptHash
 	case "x11":
 		return X11Hash
 	case "sha256d":
@@ -35,8 +38,14 @@ func GetHashFunc(hashName string) func([]byte) []byte {
 // ScryptHash is the algorithm which litecoin uses as its PoW mining algorithm
 func ScryptHash(data []byte) []byte {
 	b, _ := scrypt.Key(data, data, 1024, 1, 1, 32)
-
 	return b
+}
+
+// YescryptHash is the algorithm which krone uses as its PoW mining algorithm
+func YescryptHash(data []byte) []byte {
+	dst := make([]byte, 32)
+	goyescrypt.Hash(data, dst)
+	return dst
 }
 
 // X11Hash is the algorithm which dash uses as its PoW mining algorithm
